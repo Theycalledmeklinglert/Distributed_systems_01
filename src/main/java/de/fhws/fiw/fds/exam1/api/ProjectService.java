@@ -14,12 +14,13 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
 
+import static de.fhws.fiw.fds.exam1.models.ValidityCheck.checkProject;
+
 @Path( "projects" )
 public class ProjectService {
-	private final ProjectStorage projectStorage = ProjectStorage.getInstance();
 
-	@Context
-	protected UriInfo uriInfo;
+	@Context protected UriInfo uriInfo;
+	private final ProjectStorage projectStorage = ProjectStorage.getInstance();
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -31,33 +32,35 @@ public class ProjectService {
 	}
 
 	@GET
-	@Path("{id}")
+	@Path("{id: \\d+}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProjectById(@PathParam("id") final long id) {
-		final Optional<Project> person = this.projectStorage.readById(id);
+		final Optional<Project> project = this.projectStorage.readById(id);
 
-		if (!person.isPresent()) {
+		if (!project.isPresent()) {
 			throw new WebApplicationException(Response.status(404).build());
 		}
 
-		return Response.ok(person.get()).build();
+		return Response.ok(project.get()).build();
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createPerson(@Context final UriInfo uriInfo, final Project project) {
+	public Response createPerson(final Project project) {
+		if(!checkProject(project)) {
+			throw new WebApplicationException(Response.status(422).build());
+		}
 		this.projectStorage.create(project);
 		final URI locationURI = uriInfo.getAbsolutePathBuilder().path(Long.toString(project.getId())).build();
 		return Response.created(locationURI).build();
 	}
 
 	@PUT
-	@Path("{id}")
+	@Path("{id: \\d+}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updatePerson(@PathParam("id") final long id, final Project project) {
-		final Optional<Project> oldProject = this.projectStorage.readById(id);
 
-		if (!oldProject.isPresent()) {
+		if (!this.projectStorage.containsId(id)) {
 			throw new WebApplicationException(Response.status(404).build());
 		}
 
@@ -65,47 +68,19 @@ public class ProjectService {
 			throw new WebApplicationException(Response.status(400).build());
 		}
 
+		if(!checkProject(project)) {
+			throw new WebApplicationException(Response.status(422).build());
+		}
+
 		this.projectStorage.update(project);
 
-		return Response.ok(project).build();
+		return Response.noContent().build();
 	}
 
 	@DELETE
-	@Path("{id}")
+	@Path("{id: \\d+}")
 	public Response deletePerson(@PathParam("id") final long id) {
 		this.projectStorage.deleteById(id);
 		return Response.noContent().build();
 	}
-	/*
-	@POST
-	@Path("{id}: \\d+")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addStudent(@PathParam("id") final long id, final Student student) {
-		Optional<Project> project = this.projectStorage.readById(id);
-		if (!project.isPresent()) {
-			throw new WebApplicationException(Response.status(404).build());
-		}
-		project.ifPresent(p -> p.addStudent(student)); // Muss ich hier pruefen ob der uebergebene JSON Body "richtig" ist? Also das keine Attribute fehlen, etc. oder macht
-		// der JSON Converter das automatisch?
-		return Response.status(201).build();
-
-		// Wie kann ich herausfinden ob ein Student oder ein Supervisor hinzugefuegt werden soll?
-		// Merkt der JSON Converter das automatisch anhand der Attribute die uebergeben werden?
-
-	}
-
-	@POST
-	@Path("{id}: \\d+")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addSupervisor(@PathParam("id") final long id, final Supervisor supervisor) {
-		Optional<Project> project = this.projectStorage.readById(id);
-		if (!project.isPresent()) {
-			throw new WebApplicationException(Response.status(404).build());
-		}
-		project.ifPresent(p -> p.addSupervisor(supervisor)); // Muss ich hier pruefen ob der uebergebene JSON Body "richtig" ist? Also das keine Attribute fehlen, etc. oder macht
-		// der JSON Converter das automatisch?
-		return Response.status(201).build();
-	}
-	*/
-
 }

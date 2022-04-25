@@ -20,7 +20,7 @@ public class Supervisor {
         return firstname;
     }
 
-    private void setFirstname(String firstname) {
+    public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
@@ -28,7 +28,7 @@ public class Supervisor {
         return lastname;
     }
 
-    private void setLastname(String lastname) {
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
@@ -36,7 +36,7 @@ public class Supervisor {
         return title;
     }
 
-    private void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -44,7 +44,7 @@ public class Supervisor {
         return emailAddress;
     }
 
-    private void setEmailAddress(String emailAddress) {
+    public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 }

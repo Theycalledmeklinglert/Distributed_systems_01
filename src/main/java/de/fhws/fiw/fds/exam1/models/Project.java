@@ -1,5 +1,7 @@
 package de.fhws.fiw.fds.exam1.models;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
 import javax.ws.rs.core.Link;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,11 +28,13 @@ public class Project {
         this.type = type;
     }
 
+    // @JsonIgnore // Macht die Put-Request kaputt
     public void setId(long id) {
         this.id = id;
     }
 
-    public long getId() {
+   // @JsonIgnore
+   public long getId() {
         return this.id;
     }
 
@@ -38,7 +42,7 @@ public class Project {
         return name;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -46,7 +50,7 @@ public class Project {
         return description;
     }
 
-    private void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -54,7 +58,7 @@ public class Project {
         return students;
     }
 
-    private void setStudents(LinkedList<Student> students) {
+    public void setStudents(LinkedList<Student> students) {
         this.students = students;
     }
 
@@ -62,7 +66,7 @@ public class Project {
         return supervisors;
     }
 
-    private void setSupervisors(LinkedList<Supervisor> supervisors) {
+    public void setSupervisors(LinkedList<Supervisor> supervisors) {
         this.supervisors = supervisors;
     }
 
@@ -70,7 +74,7 @@ public class Project {
         return semester;
     }
 
-    private void setSemester(String semester) {
+    public void setSemester(String semester) {
         this.semester = semester;
     }
 
@@ -78,7 +82,7 @@ public class Project {
         return type;
     }
 
-    private void setType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 

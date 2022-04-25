@@ -21,7 +21,7 @@ public class Student {
         return firstname;
     }
 
-    private void setFirstname(String firstname) {
+    public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
@@ -29,7 +29,7 @@ public class Student {
         return lastname;
     }
 
-    private void setLastname(String lastname) {
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
@@ -37,7 +37,7 @@ public class Student {
         return course;
     }
 
-    private void setCourse(String course) {
+    public void setCourse(String course) {
         this.course = course;
     }
 
@@ -45,7 +45,7 @@ public class Student {
         return semester;
     }
 
-    private void setSemester(int semester) {
+    public void setSemester(int semester) {
         this.semester = semester;
     }
 }
