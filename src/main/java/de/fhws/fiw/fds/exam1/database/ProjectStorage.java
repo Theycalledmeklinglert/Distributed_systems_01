@@ -55,14 +55,14 @@ public class ProjectStorage {
             }
         }
 
-        public void update( final Project person )
+        public void update( final Project project, final long id )
         {
-            this.storage.put( person.getId( ), person );
+            this.storage.put( id, project );
         }
 
-        public void delete( final Project person )
+        public void delete( final Project project )
         {
-            this.storage.remove( person.getId( ) );
+            this.storage.remove( project.getId( ) );
         }
 
         public boolean containsId( final long id )

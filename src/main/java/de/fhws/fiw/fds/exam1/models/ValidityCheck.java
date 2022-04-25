@@ -7,15 +7,13 @@ public class ValidityCheck {
             return false;
         }
         // Project name and description may contain all kinds of letters and signs therefore no check necessary
-        // TODO: Crash in getStudents() / getSupervisor if List is not inialized???
+        // TODO: Crash in getStudents() / getSupervisor if List is not inialized??? --> Alternativ: Project standardmaessig je eine new LinkedList() fuer Studenten und Supervisor geben und unten nach siz() == 0 anstatt auf null checken
         if(project.getSemester().matches("[0-9]{4}[a-zA-Z]{2}")) {
-            if(project.getType().chars().allMatch(Character::isLetter)) {
                 if(project.getStudents() == null || project.getStudents().stream().allMatch(sdt -> checkStudent(sdt))) {
-                    if(project.getSupervisors() == null || project.getSupervisors().stream().allMatch(spv -> checkSupervisor(spv))) {
+                    if (project.getSupervisors() == null || project.getSupervisors().stream().allMatch(spv -> checkSupervisor(spv))) {
                         return true;
                     }
                 }
-            }
         }
         return false;
     }
@@ -44,7 +42,7 @@ public class ValidityCheck {
         if(supervisor.getFirstname().chars().allMatch(Character::isLetter)) {
             if(supervisor.getLastname().chars().allMatch(Character::isLetter)) {
                 if(!supervisor.getTitle().matches("[0-9]+")) {
-                    if(supervisor.getEmailAddress().matches("[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.][a-zA-Z0-9]+")) {
+                    if(supervisor.getEmailAddress().matches("[a-zA-Z0-9.]+[@][a-zA-Z0-9]+[.][a-zA-Z0-9]+")) {
                         return true;
                     }
                 }

@@ -11,8 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 import static de.fhws.fiw.fds.exam1.models.ValidityCheck.checkProject;
 
@@ -55,6 +54,7 @@ public class ProjectService {
 		return Response.created(locationURI).build();
 	}
 
+	// TODO: PUT funktioniert nur wenn ID im JSON Body mit dabei ist! FIXEN
 	@PUT
 	@Path("{id: \\d+}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -64,15 +64,16 @@ public class ProjectService {
 			throw new WebApplicationException(Response.status(404).build());
 		}
 
-		if (id != project.getId()) {
+		if (this.projectStorage.readById(id).equals(project)) {
 			throw new WebApplicationException(Response.status(400).build());
 		}
+
 
 		if(!checkProject(project)) {
 			throw new WebApplicationException(Response.status(422).build());
 		}
 
-		this.projectStorage.update(project);
+		this.projectStorage.update(project, id);
 
 		return Response.noContent().build();
 	}
@@ -82,5 +83,21 @@ public class ProjectService {
 	public Response deletePerson(@PathParam("id") final long id) {
 		this.projectStorage.deleteById(id);
 		return Response.noContent().build();
+	}
+
+	//TODO: BUGGED?
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response deletePerson(Project project) {
+		if(checkProject(project)) {
+			ArrayList<Project> projects = (ArrayList<Project>) this.projectStorage.findBy(project.getName(), project.getType(), project.getSemester());
+			for(Project p : projects) {
+				this.projectStorage.deleteById(p.getId());
+			}
+			return Response.noContent().build();
+		}
+		else {
+			throw new WebApplicationException(Response.status(422).build());
+		}
 	}
 }

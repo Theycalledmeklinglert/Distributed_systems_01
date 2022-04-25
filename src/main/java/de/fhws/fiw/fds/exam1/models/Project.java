@@ -33,7 +33,7 @@ public class Project {
         this.id = id;
     }
 
-   // @JsonIgnore
+   @JsonIgnore
    public long getId() {
         return this.id;
     }
