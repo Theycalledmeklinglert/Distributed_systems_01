@@ -1,4 +1,4 @@
-package de.fhws.fiw.fds.exam1.models;
+package de.fhws.fiw.fds.exam1.client;
 
 public class Student {
     private String firstname;
@@ -8,8 +8,7 @@ public class Student {
 
 
     public Student() {
-
-    }
+            }
     public Student(String firstname, String lastname, String course, int semester) {
         this.firstname = firstname;
         this.lastname = lastname;

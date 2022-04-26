@@ -54,7 +54,6 @@ public class ProjectService {
 		return Response.created(locationURI).build();
 	}
 
-	// TODO: PUT funktioniert nur wenn ID im JSON Body mit dabei ist! FIXEN
 	@PUT
 	@Path("{id: \\d+}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -85,19 +84,5 @@ public class ProjectService {
 		return Response.noContent().build();
 	}
 
-	//TODO: BUGGED?
-	@DELETE
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deletePerson(Project project) {
-		if(checkProject(project)) {
-			ArrayList<Project> projects = (ArrayList<Project>) this.projectStorage.findBy(project.getName(), project.getType(), project.getSemester());
-			for(Project p : projects) {
-				this.projectStorage.deleteById(p.getId());
-			}
-			return Response.noContent().build();
-		}
-		else {
-			throw new WebApplicationException(Response.status(422).build());
-		}
-	}
+
 }

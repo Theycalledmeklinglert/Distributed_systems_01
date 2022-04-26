@@ -1,11 +1,9 @@
-package de.fhws.fiw.fds.exam1.models;
+package de.fhws.fiw.fds.exam1.client;
 
 import com.owlike.genson.annotation.JsonIgnore;
 
-import javax.ws.rs.core.Link;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Project {
     private long id;
@@ -34,7 +32,7 @@ public class Project {
         this.id = id;
     }
 
-   @JsonIgnore
+    @JsonIgnore
    public long getId() {
         return this.id;
     }
@@ -101,7 +99,6 @@ public class Project {
     public void removeSupervisor(Supervisor supervisor) {
         this.supervisors.remove(supervisor);
     }
-
     @Override
     public String toString() {
         return "Project{" +
@@ -114,4 +111,5 @@ public class Project {
                 ", type='" + type + '\'' +
                 '}';
     }
+
 }

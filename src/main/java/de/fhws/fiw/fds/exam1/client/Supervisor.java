@@ -1,4 +1,4 @@
-package de.fhws.fiw.fds.exam1.models;
+package de.fhws.fiw.fds.exam1.client;
 
 public class Supervisor {
     private String firstname;
@@ -9,6 +9,7 @@ public class Supervisor {
     public Supervisor() {
 
     }
+
     public Supervisor(String firstname, String lastname, String course, String emailAddress) {
         this.firstname = firstname;
         this.lastname = lastname;
