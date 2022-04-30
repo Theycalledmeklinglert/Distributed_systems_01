@@ -1,16 +1,16 @@
 package de.fhws.fiw.fds.exam1.client;
 
-public class Supervisor {
+public class SupervisorView {
     private String firstname;
     private String lastname;
     private String title;
     private String emailAddress;
 
-    public Supervisor() {
+    public SupervisorView() {
 
     }
 
-    public Supervisor(String firstname, String lastname, String course, String emailAddress) {
+    public SupervisorView(String firstname, String lastname, String course, String emailAddress) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.title = course;

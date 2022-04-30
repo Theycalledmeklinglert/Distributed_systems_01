@@ -2,10 +2,8 @@ package de.fhws.fiw.fds.exam1.models;
 
 import com.owlike.genson.annotation.JsonIgnore;
 
-import javax.ws.rs.core.Link;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Objects;
 
 public class Project {
     private long id;
@@ -114,4 +112,5 @@ public class Project {
                 ", type='" + type + '\'' +
                 '}';
     }
+
 }

@@ -2,8 +2,6 @@ package de.fhws.fiw.fds.exam1.api;
 
 import de.fhws.fiw.fds.exam1.database.ProjectStorage;
 import de.fhws.fiw.fds.exam1.models.Project;
-import de.fhws.fiw.fds.exam1.models.Student;
-import de.fhws.fiw.fds.exam1.models.Supervisor;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -45,7 +43,7 @@ public class ProjectService {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createPerson(final Project project) {
+	public Response createProject(final Project project) {
 		if(!checkProject(project)) {
 			throw new WebApplicationException(Response.status(422).build());
 		}
@@ -57,25 +55,27 @@ public class ProjectService {
 	@PUT
 	@Path("{id: \\d+}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updatePerson(@PathParam("id") final long id, final Project project) {
+	public Response updatePerson(@PathParam("id") final long id, final Project newProject) {
+		Optional<Project> readProject = this.projectStorage.readById(id);
 
-		if (!this.projectStorage.containsId(id)) {
+		if (!readProject.isPresent())
+		{
 			throw new WebApplicationException(Response.status(404).build());
 		}
+		Project oldProject = readProject.get();
 
-		if (this.projectStorage.readById(id).equals(project)) {
-			throw new WebApplicationException(Response.status(400).build());
-		}
-
-
-		if(!checkProject(project)) {
+		if(!checkProject(newProject))
+		{
 			throw new WebApplicationException(Response.status(422).build());
 		}
 
-		this.projectStorage.update(project, id);
+		this.projectStorage.update(newProject, id);
 
 		return Response.noContent().build();
 	}
+
+
+
 
 	@DELETE
 	@Path("{id: \\d+}")

@@ -32,8 +32,6 @@ public class ProjectStorage {
         {
             this.storage = new HashMap<>( );
             this.key = new AtomicLong( 1l );
-            create(
-                    new Project( "Testprojekt", "Dies ist das Testprojekt", "2022ss", "programming project"));
         }
 
         public void create( final Project project )
@@ -104,5 +102,8 @@ public class ProjectStorage {
         {
         return project -> StringUtils.isEmpty( semester ) || project.getSemester().equals( semester );
         }
+
+
+
 
 }

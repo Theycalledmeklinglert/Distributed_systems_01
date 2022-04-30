@@ -1,28 +1,28 @@
 package de.fhws.fiw.fds.exam1.client;
 
 import com.owlike.genson.annotation.JsonIgnore;
+import de.fhws.fiw.fds.exam1.models.Project;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-public class Project {
+public class ProjectView {
     private long id;
     private String name;
     private String description;
-    private ArrayList<Student> students;
-    private ArrayList<Supervisor> supervisors;
+    private ArrayList<StudentView> students;
+    private ArrayList<SupervisorView> supervisors;
     private String semester;
     private String type;
 
-    public Project() {
+    public ProjectView() {
 
     }
 
-    public Project(String name, String description, String semester, String type) {
+    public ProjectView(String name, String description, String semester, String type) {
         this.name = name;
         this.description = description;
-        ArrayList<Student> students = new ArrayList<>();
-        ArrayList<Supervisor> supervisors = new ArrayList<>();
+        ArrayList<StudentView> students = new ArrayList<>();
+        ArrayList<SupervisorView> supervisors = new ArrayList<>();
         this.semester = semester;
         this.type = type;
     }
@@ -53,19 +53,19 @@ public class Project {
         this.description = description;
     }
 
-    public ArrayList<Student> getStudents() {
+    public ArrayList<StudentView> getStudents() {
         return students;
     }
 
-    public void setStudents(ArrayList<Student> students) {
+    public void setStudents(ArrayList<StudentView> students) {
         this.students = students;
     }
 
-    public ArrayList<Supervisor> getSupervisors() {
+    public ArrayList<SupervisorView> getSupervisors() {
         return supervisors;
     }
 
-    public void setSupervisors(ArrayList<Supervisor> supervisors) {
+    public void setSupervisors(ArrayList<SupervisorView> supervisors) {
         this.supervisors = supervisors;
     }
 
@@ -85,18 +85,18 @@ public class Project {
         this.type = type;
     }
 
-    public void addStudent(Student student) {
+    public void addStudent(StudentView student) {
         if(!this.students.contains(student)) this.students.add(student);
     }
 
-    public void addSupervisor(Supervisor supervisor) {
+    public void addSupervisor(SupervisorView supervisor) {
         if(!this.supervisors.contains(supervisor)) this.supervisors.add(supervisor);
     }
 
-    public void removeStudent(Student student) {
+    public void removeStudent(StudentView student) {
        this.students.remove(student);
     }
-    public void removeSupervisor(Supervisor supervisor) {
+    public void removeSupervisor(SupervisorView supervisor) {
         this.supervisors.remove(supervisor);
     }
     @Override
@@ -111,5 +111,13 @@ public class Project {
                 ", type='" + type + '\'' +
                 '}';
     }
+
+    public boolean equals(ProjectView p) {
+        if (this == p) return true;
+        if (p == null || getClass() != p.getClass()) return false;
+        ProjectView project = (ProjectView) p;
+        return (this.name == project.name) && (this.description == project.description) && (this.students == project.students) && (this.supervisors == project.supervisors) && (this.semester == project.semester) && (this.type == project.type);
+    }
+
 
 }

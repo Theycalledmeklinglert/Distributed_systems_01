@@ -1,15 +1,15 @@
 package de.fhws.fiw.fds.exam1.client;
 
-public class Student {
+public class StudentView {
     private String firstname;
     private String lastname;
     private String course;
     private int semester;
 
 
-    public Student() {
+    public StudentView() {
             }
-    public Student(String firstname, String lastname, String course, int semester) {
+    public StudentView(String firstname, String lastname, String course, int semester) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.course = course;
