@@ -58,11 +58,6 @@ public class ProjectStorage {
             this.storage.put( id, project );
         }
 
-        public void delete( final Project project )
-        {
-            this.storage.remove( project.getId( ) );
-        }
-
         public boolean containsId( final long id )
         {
             return this.storage.containsKey( id );

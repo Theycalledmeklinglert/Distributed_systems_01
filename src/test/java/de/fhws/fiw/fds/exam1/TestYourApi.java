@@ -39,7 +39,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class TestYourApi
-{
+	{
 
 		@Test
 		public void load_existing_project_by_id_status200( ) throws IOException
@@ -47,10 +47,9 @@ public class TestYourApi
 			final WebApiClient client = new WebApiClient( );
 			ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
 			final WebApiResponse postResponse = client.postProject(project);
-			final WebApiResponse response = client.loadById( 1l );
+			final WebApiResponse response = client.loadById(postResponse.getIdFromHeaderString() );
 
 			final Optional<ProjectView> result = response.getResponseData( ).stream( ).findFirst( );
-			assertTrue( result.isPresent( ) );
 			final ProjectView gotProject = result.get( );
 
 			assertEquals( 200, response.getLastStatusCode( ) );
@@ -70,10 +69,11 @@ public class TestYourApi
 			final WebApiClient client = new WebApiClient( );
 			ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
 			final WebApiResponse postResponse = client.postProject(project);
-			final WebApiResponse loadResponse = client.loadById( 2l );
+
+			final long invalidID = postResponse.getIdFromHeaderString() + 1;
+			final WebApiResponse loadResponse = client.loadById(invalidID);
 			Optional<ProjectView> gotProjectOpt = loadResponse.getResponseData().stream().findFirst();
 
-			assertFalse(gotProjectOpt.isPresent());
 			assertEquals( 404, loadResponse.getLastStatusCode( ) );
 			assertEquals( 0, loadResponse.getResponseData( ).size( ) );
 
@@ -89,7 +89,6 @@ public class TestYourApi
         final WebApiResponse loadResponse = client.loadAllProjectsByName("TestProject");
 
         final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-        assertTrue( result.isPresent( ) );
         final ProjectView gotProject = result.get( );
 
         assertEquals( 200, loadResponse.getLastStatusCode( ) );
@@ -114,7 +113,6 @@ public class TestYourApi
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 
-		assertFalse( result.isPresent( ) );
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
@@ -155,7 +153,6 @@ public class TestYourApi
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 
-		assertFalse(result.isPresent());
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
@@ -196,7 +193,6 @@ public class TestYourApi
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 
-		assertFalse(result.isPresent());
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
@@ -316,7 +312,7 @@ public class TestYourApi
 		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("", "testProject", "2025ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertFalse( result.isPresent( ) );
+
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
@@ -332,7 +328,7 @@ public class TestYourApi
 		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "testProject", "2022ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertTrue( result.isPresent( ) );
+
 		final ProjectView gotProject = result.get( );
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
@@ -356,7 +352,7 @@ public class TestYourApi
 		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "programming Project", "2022ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertFalse( result.isPresent( ) );
+
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
@@ -374,7 +370,6 @@ public class TestYourApi
 		final WebApiResponse loadResponse = client.loadById(response.getIdFromHeaderString());
 		Optional<ProjectView> gotProjectOptional = loadResponse.getResponseData().stream().findFirst();
 
-		assertTrue(gotProjectOptional.isPresent());
 		ProjectView gotProject = gotProjectOptional.get();
 
 		assertEquals( 201, response.getLastStatusCode( ) );
@@ -399,9 +394,9 @@ public class TestYourApi
 		assertEquals(Collections.EMPTY_LIST, postResponse.getResponseData( ) );
 
 		WebApiResponse loadResponse = client.loadAllProjects();
-		Optional<ProjectView> gotProjectOptional = loadResponse.getResponseData().stream().findFirst();
-		assertFalse(gotProjectOptional.isPresent());
 
+		assertEquals(200, loadResponse.getLastStatusCode());
+		assertEquals(0, loadResponse.getResponseData().size());
 	}
 
 	@Test
@@ -416,7 +411,9 @@ public class TestYourApi
 
 		WebApiResponse loadResponse = client.loadAllProjects();
 		Optional<ProjectView> gotProjectOptional = loadResponse.getResponseData().stream().findFirst();
-		assertFalse(gotProjectOptional.isPresent());
+
+		assertEquals(200, loadResponse.getLastStatusCode());
+		assertEquals(0, loadResponse.getResponseData().size());
 	}
 
 	@Test
@@ -435,8 +432,10 @@ public class TestYourApi
 		final WebApiResponse updatedLoadResponse = client.loadById(id);
 		Optional<ProjectView> updatedProjectOptional = updatedLoadResponse.getResponseData().stream().findFirst();
 
-		assertTrue(updatedProjectOptional.isPresent());
 		ProjectView updatedProject = updatedProjectOptional.get();
+
+		assertEquals(1, updatedLoadResponse.getResponseData().size());
+		assertEquals(200, loadResponse.getLastStatusCode());
 
 		assertEquals(204, putResponse.getLastStatusCode());
 		assertEquals("Updated TestProject", updatedProject.getName());
@@ -460,7 +459,9 @@ public class TestYourApi
 
 		final WebApiResponse updatedLoadResponse = client.loadById(id);
 		Optional<ProjectView> updatedProjectOptional = updatedLoadResponse.getResponseData().stream().findFirst();
-		assertFalse(updatedProjectOptional.isPresent());
+
+		assertEquals(0, updatedLoadResponse.getResponseData().size());
+		assertEquals(404, updatedLoadResponse.getLastStatusCode());
 		assertEquals(404, putResponse.getLastStatusCode());
 
 		client.deleteProjectById(id);
@@ -481,8 +482,10 @@ public class TestYourApi
 		final WebApiResponse updatedLoadResponse = client.loadById(id);
 		Optional<ProjectView> updatedProjectOptional = updatedLoadResponse.getResponseData().stream().findFirst();
 
-		assertTrue(updatedProjectOptional.isPresent());
 		ProjectView updatedProject = updatedProjectOptional.get();
+
+		assertEquals(200, updatedLoadResponse.getLastStatusCode());
+		assertEquals(1, updatedLoadResponse.getResponseData().size());
 
 		assertEquals(204, putResponse.getLastStatusCode());
 		assertEquals("TestProject", updatedProject.getName());
@@ -508,7 +511,6 @@ public class TestYourApi
 
 		Optional<ProjectView> gotProjectOpt = loadResponse.getResponseData().stream().findFirst();
 
-		assertFalse(gotProjectOpt.isPresent());
 		assertEquals(204, deleteResponse.getLastStatusCode());
 		assertEquals(404, loadResponse.getLastStatusCode());
 		assertEquals(0, loadResponse.getResponseData().size());
@@ -524,7 +526,6 @@ public class TestYourApi
 
 		Optional<ProjectView> gotProjectOpt = loadResponse.getResponseData().stream().findFirst();
 
-		assertFalse(gotProjectOpt.isPresent());
 		assertEquals(204, deleteResponse.getLastStatusCode());
 		assertEquals(404, loadResponse.getLastStatusCode());
 		assertEquals(0, loadResponse.getResponseData().size());
