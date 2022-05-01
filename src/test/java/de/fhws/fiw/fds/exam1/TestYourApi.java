@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import de.fhws.fiw.fds.exam1.client.ProjectView;
@@ -35,6 +36,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -151,8 +153,6 @@ public class TestYourApi
 		final WebApiResponse postResponse = client.postProject(project);
 		final WebApiResponse loadResponse = client.loadAllProjectsBySemester("2020ws");
 
-		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
@@ -163,49 +163,68 @@ public class TestYourApi
 	public void load_existing_project_by_type_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2024ws", "programming Project");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2025ws", "thesis");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
 		final WebApiResponse loadResponse = client.loadAllProjectsByType("testProject");
 
-		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertTrue( result.isPresent( ) );
-		final ProjectView gotProject = result.get( );
+		List<ProjectView> list = loadResponse.getResponseData().stream().collect(Collectors.toList());
+		final ProjectView firstResult = list.get(0);
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(1, loadResponse.getResponseData().size());
-		assertEquals( "TestProject", gotProject.getName() );
-		assertEquals( "This is a test Project", gotProject.getDescription() );
-		assertEquals( "2022ws", gotProject.getSemester() );
-		assertEquals( "testProject", gotProject.getType() );
-		assertEquals(null, gotProject.getStudents());
-		assertEquals(null, gotProject.getSupervisors());
+		assertEquals( "TestProject1", firstResult.getName() );
+		assertEquals( "This is a test Project", firstResult.getDescription() );
+		assertEquals( "2022ws", firstResult.getSemester() );
+		assertEquals( "testProject", firstResult.getType() );
+		assertEquals(null, firstResult.getStudents());
+		assertEquals(null, firstResult.getSupervisors());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_non_existing_project_by_type_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
-		final WebApiResponse loadResponse = client.loadAllProjectsByType("programmning project");
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2025ws", "testProject");
 
-		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
+		final WebApiResponse loadResponse = client.loadAllProjectsByType("programming project");
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_existing_project_by_name_and_semester_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
-		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "", "2022ws");
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2025ws", "testProject");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
+		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject1", "", "2022ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 		assertTrue( result.isPresent( ) );
@@ -213,39 +232,53 @@ public class TestYourApi
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(1, loadResponse.getResponseData().size());
-		assertEquals( "TestProject", gotProject.getName() );
+		assertEquals( "TestProject1", gotProject.getName() );
 		assertEquals( "This is a test Project", gotProject.getDescription() );
 		assertEquals( "2022ws", gotProject.getSemester() );
 		assertEquals( "testProject", gotProject.getType() );
 		assertEquals(null, gotProject.getStudents());
 		assertEquals(null, gotProject.getSupervisors());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_non_existing_project_by_name_and_semester_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
-		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "", "2023ws");
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2022ws", "testProject");
 
-		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertFalse( result.isPresent( ) );
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
+		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "", "2025ws");
+
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_existing_project_by_name_and_type_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
-		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "testProject", "");
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is another test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("Programmierprojekt", "This is a test Project", "2025ws", "programming project");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
+		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject1", "testProject", "");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 		assertTrue( result.isPresent( ) );
@@ -253,62 +286,85 @@ public class TestYourApi
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(1, loadResponse.getResponseData().size());
-		assertEquals( "TestProject", gotProject.getName() );
+		assertEquals( "TestProject1", gotProject.getName() );
 		assertEquals( "This is a test Project", gotProject.getDescription() );
 		assertEquals( "2022ws", gotProject.getSemester() );
 		assertEquals( "testProject", gotProject.getType() );
 		assertEquals(null, gotProject.getStudents());
 		assertEquals(null, gotProject.getSupervisors());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_non_existing_project_by_name_and_type_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2025ws", "testProject");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
 		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("Project", "testProject", "");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertFalse( result.isPresent( ) );
+
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
-	public void load_existing_project_by_type_and_semester_status200( ) throws IOException
+	public void load_existing_projects_by_type_and_semester_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2024ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2025ws", "testProject");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
 		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("", "testProject", "2022ws");
 
-		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
-		assertTrue( result.isPresent( ) );
-		final ProjectView gotProject = result.get( );
+		List<ProjectView> list = loadResponse.getResponseData().stream().collect(Collectors.toList());
+		final ProjectView firstResult = list.get(0);
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(1, loadResponse.getResponseData().size());
-		assertEquals( "TestProject", gotProject.getName() );
-		assertEquals( "This is a test Project", gotProject.getDescription() );
-		assertEquals( "2022ws", gotProject.getSemester() );
-		assertEquals( "testProject", gotProject.getType() );
-		assertEquals(null, gotProject.getStudents());
-		assertEquals(null, gotProject.getSupervisors());
+		assertEquals( "TestProject1", firstResult.getName() );
+		assertEquals( "This is a test Project", firstResult.getDescription() );
+		assertEquals( "2022ws", firstResult.getSemester() );
+		assertEquals( "testProject", firstResult.getType() );
+		assertEquals(null, firstResult.getStudents());
+		assertEquals(null, firstResult.getSupervisors());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_non_existing_project_by_type_and_semester_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2022ws", "testProject");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
 		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("", "testProject", "2025ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
@@ -316,16 +372,24 @@ public class TestYourApi
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_existing_project_by_name_type_and_semester_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
-		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "testProject", "2022ws");
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2022ws", "testProject");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+
+		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject1", "testProject", "2022ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 
@@ -333,31 +397,91 @@ public class TestYourApi
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(1, loadResponse.getResponseData().size());
-		assertEquals( "TestProject", gotProject.getName() );
+		assertEquals( "TestProject1", gotProject.getName() );
 		assertEquals( "This is a test Project", gotProject.getDescription() );
 		assertEquals( "2022ws", gotProject.getSemester() );
 		assertEquals( "testProject", gotProject.getType() );
 		assertEquals(null, gotProject.getStudents());
 		assertEquals(null, gotProject.getSupervisors());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
 
 	@Test
 	public void load_non_existing_project_by_name_type_and_semester_status200( ) throws IOException
 	{
 		final WebApiClient client = new WebApiClient( );
-		ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
-		final WebApiResponse postResponse = client.postProject(project);
-		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "programming Project", "2022ws");
+		ProjectView project1 = new ProjectView("TestProject1", "This is a test Project", "2022ws", "testProject");
+		ProjectView project2 = new ProjectView("TestProject2", "This is a test Project", "2022ws", "testProject");
+		ProjectView project3 = new ProjectView("TestProject3", "This is a test Project", "2022ws", "testProject");
+
+		final WebApiResponse postResponse1 = client.postProject(project1);
+		final WebApiResponse postResponse2 = client.postProject(project2);
+		final WebApiResponse postResponse3 = client.postProject(project3);
+		final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject5", "programming Project", "2022ws");
 
 		final Optional<ProjectView> result = loadResponse.getResponseData( ).stream( ).findFirst( );
 
 		assertEquals( 200, loadResponse.getLastStatusCode( ) );
 		assertEquals(0, loadResponse.getResponseData().size());
 
-		client.deleteProjectById(postResponse.getIdFromHeaderString());
+		client.deleteProjectById(postResponse1.getIdFromHeaderString());
+		client.deleteProjectById(postResponse2.getIdFromHeaderString());
+		client.deleteProjectById(postResponse3.getIdFromHeaderString());
 	}
+
+		@Test
+		public void load_multiple_existing_projects_by_name_type_and_semester_status200( ) throws IOException
+		{
+			final WebApiClient client = new WebApiClient( );
+			ProjectView project1 = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
+			ProjectView project2 = new ProjectView("TestProject", "This is a second Project", "2022ws", "testProject");
+			ProjectView project3 = new ProjectView("TestProject3", "This is a third Project", "2025ws", "testProject");
+
+			final WebApiResponse postResponse1 = client.postProject(project1);
+			final WebApiResponse postResponse2 = client.postProject(project2);
+			final WebApiResponse postResponse3 = client.postProject(project3);
+
+			final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "testProject", "2022ws");
+
+			List<ProjectView> list = loadResponse.getResponseData().stream().collect(Collectors.toList());
+			ProjectView firstResult;
+			ProjectView secondResult;
+			if(list.get(0).getDescription() == "This is a second Project")
+			{
+				firstResult = list.get(1);
+				secondResult = list.get(0);
+			}
+			else
+			{
+				firstResult = list.get(0);
+				secondResult = list.get(1);
+			}
+
+			assertEquals( 200, loadResponse.getLastStatusCode( ) );
+			assertEquals(2, loadResponse.getResponseData().size());
+
+			assertEquals( "TestProject", firstResult.getName() );
+			assertEquals( "This is a test Project", firstResult.getDescription() );
+			assertEquals( "2022ws", firstResult.getSemester() );
+			assertEquals( "testProject", firstResult.getType() );
+			assertEquals(null, firstResult.getStudents());
+			assertEquals(null, firstResult.getSupervisors());
+
+			assertEquals( "TestProject", secondResult.getName() );
+			assertEquals( "This is a second Project", secondResult.getDescription() );
+			assertEquals( "2022ws", secondResult.getSemester() );
+			assertEquals( "testProject", secondResult.getType() );
+			assertEquals(null, secondResult.getStudents());
+			assertEquals(null, secondResult.getSupervisors());
+
+			client.deleteProjectById(postResponse1.getIdFromHeaderString());
+			client.deleteProjectById(postResponse2.getIdFromHeaderString());
+			client.deleteProjectById(postResponse3.getIdFromHeaderString());
+		}
+
 
 
 	@Test
@@ -497,6 +621,38 @@ public class TestYourApi
 
 		client.deleteProjectById(id);
 	}
+
+		@Test
+		public void test_put_with_invalid_update_to_existent_project_status400( ) throws IOException
+		{
+			final WebApiClient client = new WebApiClient( );
+			ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
+			final WebApiResponse postResponse = client.postProject(project);
+
+			final long id = postResponse.getIdFromHeaderString();
+
+			ProjectView update = new ProjectView("", "", "sadsad", "testProject");
+			WebApiResponse putResponse = client.updateProject(id, update);
+
+			final WebApiResponse updatedLoadResponse = client.loadById(id);
+			Optional<ProjectView> updatedProjectOptional = updatedLoadResponse.getResponseData().stream().findFirst();
+
+			ProjectView updatedProject = updatedProjectOptional.get();
+
+			assertEquals(200, updatedLoadResponse.getLastStatusCode());
+			assertEquals(1, updatedLoadResponse.getResponseData().size());
+
+			assertEquals(422, putResponse.getLastStatusCode());
+			assertEquals("TestProject", updatedProject.getName());
+			assertEquals("This is a test Project", updatedProject.getDescription());
+			assertEquals("2022ws", updatedProject.getSemester());
+			assertEquals("testProject", updatedProject.getType());
+			assertEquals(null, updatedProject.getStudents());
+			assertEquals(null, updatedProject.getSupervisors());
+
+			client.deleteProjectById(id);
+		}
+
 
 	@Test
 	public void test_delete_with_existing_id_status204() throws IOException
