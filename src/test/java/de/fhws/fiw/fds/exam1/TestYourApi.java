@@ -72,7 +72,7 @@ public class TestYourApi
 			ProjectView project = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
 			final WebApiResponse postResponse = client.postProject(project);
 
-			final long invalidID = postResponse.getIdFromHeaderString() + 1;
+			final long invalidID = 0l;
 			final WebApiResponse loadResponse = client.loadById(invalidID);
 			Optional<ProjectView> gotProjectOpt = loadResponse.getResponseData().stream().findFirst();
 
@@ -449,6 +449,7 @@ public class TestYourApi
 			List<ProjectView> list = loadResponse.getResponseData().stream().collect(Collectors.toList());
 			ProjectView firstResult;
 			ProjectView secondResult;
+
 			if(list.get(0).getDescription() == "This is a second Project")
 			{
 				firstResult = list.get(1);
@@ -481,7 +482,6 @@ public class TestYourApi
 			client.deleteProjectById(postResponse2.getIdFromHeaderString());
 			client.deleteProjectById(postResponse3.getIdFromHeaderString());
 		}
-
 
 
 	@Test

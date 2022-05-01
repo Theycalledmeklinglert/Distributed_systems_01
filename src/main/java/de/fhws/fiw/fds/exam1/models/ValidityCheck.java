@@ -2,15 +2,19 @@ package de.fhws.fiw.fds.exam1.models;
 
 public class ValidityCheck {
 
-    public static boolean checkProject(Project project) {
-        if(project.getName() == null || project.getDescription() == null || project.getSemester() == null || project.getType() == null) {
+    public static boolean checkProject(Project project)
+    {
+        if(isMissingAttributes(project))
+        {
             return false;
         }
         // Project name and description may contain all kinds of letters and signs therefore no check necessary
-        // TODO: Crash in getStudents() / getSupervisor if List is not inialized??? --> Alternativ: Project standardmaessig je eine new LinkedList() fuer Studenten und Supervisor geben und unten nach siz() == 0 anstatt auf null checken
-        if(project.getSemester().matches("[0-9]{4}[a-zA-Z]{2}")) {
-                if(project.getStudents() == null || project.getStudents().stream().allMatch(sdt -> checkStudent(sdt))) {
-                    if (project.getSupervisors() == null || project.getSupervisors().stream().allMatch(spv -> checkSupervisor(spv))) {
+        if(isValidSemester(project))
+        {
+                if(validStudents(project))
+                {
+                    if (validSupervisors(project))
+                    {
                         return true;
                     }
                 }
@@ -18,15 +22,20 @@ public class ValidityCheck {
         return false;
     }
 
-    // The if Loops are nested for better readability
+    // if Loops are nested for better readability
     public static boolean checkStudent(Student student) {
-        if(student.getFirstname() == null || student.getLastname() == null || student.getCourse() == null) {    // Value of uninitialized int is 0, therefore no null check is necessary
+        if(isMissingAttributes(student))
+        {
             return false;
         }
-        if(student.getFirstname().chars().allMatch(Character::isLetter)) {
-            if(student.getLastname().chars().allMatch(Character::isLetter)) {
-                if(student.getCourse().chars().allMatch(Character::isLetter)) {
-                    if(student.getSemester() > 0 && student.getSemester() < 8) {
+        if(isLetter(student.getFirstname()))
+        {
+            if(isLetter(student.getLastname()))
+            {
+                if(isLetter(student.getCourse()))
+                {
+                    if(student.getSemester() > 0 && student.getSemester() < 8)
+                    {
                         return true;
                     }
                 }
@@ -36,13 +45,18 @@ public class ValidityCheck {
     }
 
     public static boolean checkSupervisor(Supervisor supervisor) { // Reminder: Check if check for Email Format works correctly
-        if(supervisor.getFirstname() == null || supervisor.getLastname() == null ||supervisor.getTitle() == null ||supervisor.getEmailAddress() == null) {
+        if(isMissingAttributes(supervisor))
+        {
             return false;
         }
-        if(supervisor.getFirstname().chars().allMatch(Character::isLetter)) {
-            if(supervisor.getLastname().chars().allMatch(Character::isLetter)) {
-                if(!supervisor.getTitle().matches("[0-9]+")) {
-                    if(supervisor.getEmailAddress().matches("[a-zA-Z0-9.]+[@][a-zA-Z0-9]+[.][a-zA-Z0-9]+")) {
+        if(isLetter(supervisor.getFirstname()))
+        {
+            if(isLetter(supervisor.getLastname()))
+            {
+                if(isValidTitle(supervisor.getTitle()))
+                {
+                    if(isValidEMail(supervisor.getEmailAddress()))
+                    {
                         return true;
                     }
                 }
@@ -50,4 +64,47 @@ public class ValidityCheck {
         }
         return false;
     }
+
+    private static boolean isMissingAttributes(Project project)
+    {
+        return project.getName() == null || project.getDescription() == null || project.getSemester() == null || project.getType() == null;
+    }
+    private static boolean isMissingAttributes(Student student)
+    {
+        return student.getFirstname() == null || student.getLastname() == null || student.getCourse() == null;
+    }
+    private static boolean isMissingAttributes(Supervisor supervisor)
+    {
+        return supervisor.getFirstname() == null || supervisor.getLastname() == null ||supervisor.getTitle() == null ||supervisor.getEmailAddress() == null;
+    }
+
+    private static boolean isValidSemester(Project project)
+    {
+        return project.getSemester().matches("[0-9]{4}[a-zA-Z]{2}");
+    }
+
+    private static boolean validStudents(Project project)
+    {
+       return project.getStudents() == null || project.getStudents().stream().allMatch(student -> checkStudent(student));
+    }
+    private static boolean validSupervisors(Project project)
+    {
+        return project.getSupervisors() == null || project.getSupervisors().stream().allMatch(supervisor -> checkSupervisor(supervisor));
+    }
+
+    private static boolean isLetter(String string)
+    {
+        return string.chars().allMatch(Character::isLetter);
+    }
+
+    private static boolean isValidTitle(String title)
+    {
+        return !title.matches("[0-9]+");
+    }
+
+    private static boolean isValidEMail(String eMail)
+    {
+        return eMail.matches("[a-zA-Z0-9.]+[@][a-zA-Z0-9]+[.][a-zA-Z0-9]+");
+    }
+
 }

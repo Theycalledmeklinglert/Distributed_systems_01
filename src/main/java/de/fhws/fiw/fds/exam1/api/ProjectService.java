@@ -22,7 +22,8 @@ public class ProjectService {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProjects(@DefaultValue("") @QueryParam("name") final String name,
-								@DefaultValue("") @QueryParam("type") final String type, @DefaultValue("") @QueryParam("semester") final String semester) {
+								@DefaultValue("") @QueryParam("type") final String type, @DefaultValue("") @QueryParam("semester") final String semester)
+	{
 		final Collection<Project> allPersons = this.projectStorage.findBy(name, type, semester);
 
 		return Response.ok(allPersons).build();
@@ -31,7 +32,8 @@ public class ProjectService {
 	@GET
 	@Path("{id: \\d+}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProjectById(@PathParam("id") final long id) {
+	public Response getProjectById(@PathParam("id") final long id)
+	{
 		final Optional<Project> project = this.projectStorage.readById(id);
 
 		if (!project.isPresent()) {
@@ -43,7 +45,8 @@ public class ProjectService {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createProject(final Project project) {
+	public Response createProject(final Project project)
+	{
 		if(!checkProject(project)) {
 			throw new WebApplicationException(Response.status(422).build());
 		}
@@ -55,7 +58,8 @@ public class ProjectService {
 	@PUT
 	@Path("{id: \\d+}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updatePerson(@PathParam("id") final long id, final Project newProject) {
+	public Response updatePerson(@PathParam("id") final long id, final Project newProject)
+	{
 		Optional<Project> readProject = this.projectStorage.readById(id);
 
 		if (!readProject.isPresent())
@@ -73,9 +77,6 @@ public class ProjectService {
 
 		return Response.noContent().build();
 	}
-
-
-
 
 	@DELETE
 	@Path("{id: \\d+}")

@@ -27,7 +27,6 @@ public class ProjectView {
         this.type = type;
     }
 
-    // @JsonIgnore // Macht die Put-Request kaputt
     public void setId(long id) {
         this.id = id;
     }
@@ -111,13 +110,5 @@ public class ProjectView {
                 ", type='" + type + '\'' +
                 '}';
     }
-
-    public boolean equals(ProjectView p) {
-        if (this == p) return true;
-        if (p == null || getClass() != p.getClass()) return false;
-        ProjectView project = (ProjectView) p;
-        return (this.name == project.name) && (this.description == project.description) && (this.students == project.students) && (this.supervisors == project.supervisors) && (this.semester == project.semester) && (this.type == project.type);
-    }
-
 
 }

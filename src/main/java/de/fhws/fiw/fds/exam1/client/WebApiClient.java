@@ -22,41 +22,6 @@ public class WebApiClient {
         this.genson = new Genson();
     }
 
-    /*
-    public static void main(String[] args) throws Exception {
-        WebApiClient projectClient = new WebApiClient();
-       // WebApiResponse response = projectClient.loadById(1);
-       // System.out.println(response.getResponseData());
-       // System.out.println(response.getLastStatusCode());
-        ProjectView project = new ProjectView("My Project", "Another TestProject", "2022ws", "Test");
-        System.out.println(projectClient.postProject(project).getResponseData());
-        WebApiResponse response = projectClient.loadById(1);
-        System.out.println(response.getResponseData());
-        System.out.println(response.getLastStatusCode());
-       for(ProjectView p : response.getResponseData()) {
-           System.out.println(" Hier: " + p.getId());
-       }
-
-
-        project = new ProjectView("My updated Project", "Another updated TestProject", "2022ws", "Test");
-        response = projectClient.updateProject(1, project);
-        System.out.print(response.getLastStatusCode());
-        System.out.println(response.getResponseData());
-        System.out.println(projectClient.loadById(1).getResponseData());
-        response = projectClient.deleteProjectById(1);
-        System.out.println(response.getLastStatusCode());
-
-
-        project = new ProjectView("My Project", "Another TestProject", "2022ws", "Test");
-        WebApiResponse postResponse = projectClient.postProject(project);
-        response = projectClient.loadById(postResponse.getIdFromHeaderString());
-        System.out.println(" Hier2: " + response.getResponseData());
-
-           }
-        */
-
-
-
     public WebApiResponse loadById( final long id ) throws IOException
     {
         final String theUrl = String.format( "%s/%d", URL, id );

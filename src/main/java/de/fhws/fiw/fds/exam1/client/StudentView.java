@@ -6,7 +6,6 @@ public class StudentView {
     private String course;
     private int semester;
 
-
     public StudentView() {
             }
     public StudentView(String firstname, String lastname, String course, int semester) {
