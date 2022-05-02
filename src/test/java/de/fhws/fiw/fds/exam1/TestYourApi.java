@@ -483,7 +483,6 @@ public class TestYourApi
 			client.deleteProjectById(postResponse3.getIdFromHeaderString());
 		}
 
-
 	@Test
 	public void test_post_project_status201( ) throws IOException
 	{
