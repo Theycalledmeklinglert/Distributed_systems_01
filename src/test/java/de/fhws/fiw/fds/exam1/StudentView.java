@@ -1,4 +1,4 @@
-package de.fhws.fiw.fds.exam1.client;
+package de.fhws.fiw.fds.exam1;
 
 public class StudentView {
     private String firstname;

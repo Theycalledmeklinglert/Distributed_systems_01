@@ -1,11 +1,9 @@
-package de.fhws.fiw.fds.exam1.client;
+package de.fhws.fiw.fds.exam1;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import de.fhws.fiw.fds.exam1.models.Project;
 import okhttp3.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

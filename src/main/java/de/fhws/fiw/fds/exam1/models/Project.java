@@ -27,7 +27,6 @@ public class Project {
         this.type = type;
     }
 
-    // @JsonIgnore // Macht die Put-Request kaputt
     public void setId(long id) {
         this.id = id;
     }

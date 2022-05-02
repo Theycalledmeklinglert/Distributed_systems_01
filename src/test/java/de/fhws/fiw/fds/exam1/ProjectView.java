@@ -1,7 +1,6 @@
-package de.fhws.fiw.fds.exam1.client;
+package de.fhws.fiw.fds.exam1;
 
 import com.owlike.genson.annotation.JsonIgnore;
-import de.fhws.fiw.fds.exam1.models.Project;
 
 import java.util.ArrayList;
 

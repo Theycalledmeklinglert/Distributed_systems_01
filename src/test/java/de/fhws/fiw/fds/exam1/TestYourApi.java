@@ -16,12 +16,7 @@
 
 package de.fhws.fiw.fds.exam1;
 
-import de.fhws.fiw.fds.exam1.client.WebApiClient;
-import de.fhws.fiw.fds.exam1.client.WebApiResponse;
-import de.fhws.fiw.fds.exam1.client.ProjectView;
 import de.fhws.fiw.fds.exam1.models.Project;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -29,13 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.fhws.fiw.fds.exam1.client.ProjectView;
-import de.fhws.fiw.fds.exam1.client.WebApiClient;
-import de.fhws.fiw.fds.exam1.client.WebApiResponse;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -438,7 +426,7 @@ public class TestYourApi
 			final WebApiClient client = new WebApiClient( );
 			ProjectView project1 = new ProjectView("TestProject", "This is a test Project", "2022ws", "testProject");
 			ProjectView project2 = new ProjectView("TestProject", "This is a second Project", "2022ws", "testProject");
-			ProjectView project3 = new ProjectView("TestProject3", "This is a third Project", "2025ws", "testProject");
+			ProjectView project3 = new ProjectView("TestProject", "This is a third Project", "2025ws", "testProject");
 
 			final WebApiResponse postResponse1 = client.postProject(project1);
 			final WebApiResponse postResponse2 = client.postProject(project2);
@@ -446,37 +434,28 @@ public class TestYourApi
 
 			final WebApiResponse loadResponse = client.loadAllProjectsByNameANDSemesterANDType("TestProject", "testProject", "2022ws");
 
-			List<ProjectView> list = loadResponse.getResponseData().stream().collect(Collectors.toList());
-			ProjectView firstResult;
-			ProjectView secondResult;
+			List<ProjectView> firstResult = loadResponse.getResponseData().stream().filter(p -> (p.getDescription().equals("This is a test Project") )).collect(Collectors.toList());
+			List<ProjectView> secondResult = loadResponse.getResponseData().stream().filter(p -> (p.getDescription().equals("This is a second Project") )).collect(Collectors.toList());
 
-			if(list.get(0).getDescription() == "This is a second Project")
-			{
-				firstResult = list.get(1);
-				secondResult = list.get(0);
-			}
-			else
-			{
-				firstResult = list.get(0);
-				secondResult = list.get(1);
-			}
+			ProjectView firstProject = firstResult.get(0);
+			ProjectView secondProject = secondResult.get(0);
 
 			assertEquals( 200, loadResponse.getLastStatusCode( ) );
 			assertEquals(2, loadResponse.getResponseData().size());
 
-			assertEquals( "TestProject", firstResult.getName() );
-			assertEquals( "This is a test Project", firstResult.getDescription() );
-			assertEquals( "2022ws", firstResult.getSemester() );
-			assertEquals( "testProject", firstResult.getType() );
-			assertEquals(null, firstResult.getStudents());
-			assertEquals(null, firstResult.getSupervisors());
+			assertEquals( "TestProject", firstProject.getName() );
+			assertEquals( "This is a test Project", firstProject.getDescription() );
+			assertEquals( "2022ws", firstProject.getSemester() );
+			assertEquals( "testProject", firstProject.getType() );
+			assertEquals(null, firstProject.getStudents());
+			assertEquals(null, firstProject.getSupervisors());
 
-			assertEquals( "TestProject", secondResult.getName() );
-			assertEquals( "This is a second Project", secondResult.getDescription() );
-			assertEquals( "2022ws", secondResult.getSemester() );
-			assertEquals( "testProject", secondResult.getType() );
-			assertEquals(null, secondResult.getStudents());
-			assertEquals(null, secondResult.getSupervisors());
+			assertEquals( "TestProject", secondProject.getName() );
+			assertEquals( "This is a second Project", secondProject.getDescription() );
+			assertEquals( "2022ws", secondProject.getSemester() );
+			assertEquals( "testProject", secondProject.getType() );
+			assertEquals(null, secondProject.getStudents());
+			assertEquals(null, secondProject.getSupervisors());
 
 			client.deleteProjectById(postResponse1.getIdFromHeaderString());
 			client.deleteProjectById(postResponse2.getIdFromHeaderString());
@@ -537,6 +516,7 @@ public class TestYourApi
 
 		assertEquals(200, loadResponse.getLastStatusCode());
 		assertEquals(0, loadResponse.getResponseData().size());
+
 	}
 
 	@Test

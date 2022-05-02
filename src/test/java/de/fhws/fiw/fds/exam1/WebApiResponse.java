@@ -1,4 +1,4 @@
-package de.fhws.fiw.fds.exam1.client;
+package de.fhws.fiw.fds.exam1;
 
 import java.util.Collection;
 import java.util.Collections;
